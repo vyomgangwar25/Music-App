@@ -128,7 +128,7 @@ header .menu_side .menu_song li {
     margin-bottom: 10px;
     cursor: pointer;
     transition: .3 linear;
-    
+ 
 }
 
 header .menu_side .menu_song li:hover{
@@ -755,4 +755,6 @@ cursor: pointer;
     height: 100%;
     border-radius:50%;
  }
+ 
+
  

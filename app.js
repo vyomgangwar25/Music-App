@@ -1,6 +1,5 @@
 const music= new Audio('audio/1.mp3');
-//music.play();
-
+//music.play(); first music play
 const song=[
     {
         id:"1",
@@ -111,10 +110,17 @@ const song=[
     }
 ]
 
-//music play ,musicPlay button fix and waveflow
 
+
+Array.from(document.getElementsByClassName("songItem")).forEach((e,i)=>{
+    e.getElementsByTagName('img')[0].src=song[i].poster          //change images of songs
+    e.getElementsByTagName('h5')[0].innerHTML=song[i].songName  // change song name and subtitle
+})
+
+//music  masterplay,musicPlay button fix and waveflow
 let masterPlay=document.getElementById("masterPlay");
 let wave=document.getElementById('wave')
+
 masterPlay.addEventListener('click',()=>{
     if(music.paused|| music.currentTime<=0)
     {
@@ -131,27 +137,18 @@ masterPlay.addEventListener('click',()=>{
     }
 })
 
-const makeAllBackground=()=>{
-    Array.from(document.getElementsByClassName('songItem')).forEach((el)=>{
-        el.style.background='rgb(105, 105, 105,.0)';
-        
-    })
-}
-const makeAllplays=()=>{
+const makeAllplays=()=>{   //change the icon of play song
     Array.from(document.getElementsByClassName('playlistPlay')).forEach((el)=>{
-        el.style.background='rgb(105, 105, 105,.0)';
-        el.classList.remove('bi-play-fill')
-        el.classList.add('bi-pause-fill')
+        el.classList.add('bi-play-circle-fill')
+        el.classList.remove('bi-pause-circle-fill')
+        wave.classList.add('active1')   //active the wave
     })
-}
- 
-//Array.from(document.getElementsByClassName('songItem'))[index - 1].style.background='rgb(105, 105, 105,.1)'
-Array.from(document.getElementsByClassName("songItem")).forEach((e,i)=>{
-    e.getElementsByTagName('img')[0].src=song[i].poster          //change images of songs
-    e.getElementsByTagName('h5')[0].innerHTML=song[i].songName  // change song name and subtitle
-})
-
-
+} 
+const makeAllBackground=()=>{   //chamge the background of play song
+    Array.from(document.getElementsByClassName('songItem')).forEach((el)=>{
+        el.style.background='rgb(105, 105, 105,.0)'; 
+    })
+} 
 
 let search_results=document.getElementsByClassName('serach_results')[0];
 song.forEach(element=>{
@@ -165,6 +162,8 @@ song.forEach(element=>{
     </div>`;
     search_results.appendChild(card);
 });
+
+
 let input =document.getElementsByTagName('input')[0];
 input.addEventListener('keyup',()=>{
    let input_value=input.value.toUpperCase() ;
@@ -190,9 +189,13 @@ input.addEventListener('keyup',()=>{
 })
 
 
+
 //song play when click along with songPoster change
 let index=0; 
+
 let poster_master_play=document.getElementById('poster_master_play');  //target the poster
+let title=document.getElementById('title')
+ 
 let download_music=document.getElementById('download_music');         //download button target
 Array.from(document.getElementsByClassName('playListPlay')).forEach((e)=>{
     e.addEventListener('click',(el)=>{
@@ -204,27 +207,32 @@ Array.from(document.getElementsByClassName('playListPlay')).forEach((e)=>{
         masterPlay.classList.add('bi-pause-fill')
         download_music.href= `audio/${index}.mp3`;
         let songTitles=song.filter((els)=>{                      //change subtitle when click along with song
-           return els.id==index;
+           return els.id==index;   //returns an object
         });
-        songTitles.forEach(elss=>{
-         let {songName}=elss;
+        songTitles.forEach(elss=>{   //catch an object 
+         let {songName}=elss;         //and destructure it on the fly
          title.innerHTML=songName
-        })
-    })
+         //console.log(title);
+        });
+        makeAllBackground();
+        Array.from(document.getElementsByClassName('songItem'))[index-1].style.background="rgb(105, 105, 105,.1)"
+        makeAllplays();
+        el.target.classList.remove ('bi-play-circle-fill');
+        el.target.classList.add('bi-pause-circle-fill'); 
+    })     
 })
-
 
 let currentStart=document.getElementById('currentStart');
 let currentEnd=document.getElementById('currentEnd');
  //seek updation
  let seek=document.getElementById('seek');
  let bar2=document.getElementById('bar2');
-  let dot=document.getElementsByClassName('dot')[0];
+ let dot=document.getElementsByClassName('dot')[0];
 
 // update time stamp of a song
     music.addEventListener('timeupdate',()=>{
-     let music_curr=music.currentTime;
-     let music_dur=music.duration;
+     let music_curr=music.currentTime;     //current time of music
+     let music_dur=music.duration;         //music duration
 
 
     
@@ -257,23 +265,7 @@ let currentEnd=document.getElementById('currentEnd');
   })
  
 
-
-let pop_song_left=document.getElementById("pop_song_left");
-let pop_song_right=document.getElementById("pop_song_right")
-let pop_song=document.getElementsByClassName("pop_song")[0];
-
-//scroll popular song right
-pop_song_right.addEventListener('click',()=>{
-    pop_song.scrollLeft+=330;
-})
-
-//scroll popular song left
-pop_song_left.addEventListener('click',()=>{
-    pop_song.scrollLeft-=330;
-})
-
-
-//control volume
+ //control volume
 let vol_icon=document.getElementById('vol_icon');
 let vol=document.getElementById('vol');
 let vol_bar=document.getElementsByClassName('vol_bar')[0];
@@ -309,12 +301,12 @@ vol.addEventListener('change',()=>{
     vol_bar.style.left=`${vol_a}%`;
     music.volume = vol_a / 100;
     
-})
+   })
 
-//next rev button of musicplay
+   //next rev button of musicplay
 
 let back=document.getElementById('back');
-let next=document.getElementById('next')
+let next=document.getElementById('next');
 
 back.addEventListener('click',() => {
     index -= 1; //rev button
@@ -326,7 +318,9 @@ back.addEventListener('click',() => {
     music.src=`audio/${index}.mp3`;
     poster_master_play.src=`img/${index}.jpg`;
     music.play();
-     
+    masterPlay.classList.remove('bi-play-fill')
+    masterPlay.classList.add('bi-pause-fill')
+    wave.classList.add('active1');
 
     let songTitles=song.filter((els)=>{                      //change subtitle when click along with song
        return els.id==index;
@@ -336,7 +330,9 @@ back.addEventListener('click',() => {
      title.innerHTML=songName
 })
 })
-next.addEventListener('click',()=>{
+
+
+    next.addEventListener('click',()=>{
     index++;  //forward button
     if(index >  Array.from(document.getElementsByClassName(`songItem`)).length)
     {
@@ -346,6 +342,9 @@ next.addEventListener('click',()=>{
     music.src=`audio/${index}.mp3`;
     poster_master_play.src=`img/${index}.jpg`;
     music.play();
+    masterPlay.classList.remove('bi-play-fill')
+    masterPlay.classList.add('bi-pause-fill')
+    wave.classList.add('active1');
      
 
     let songTitles=song.filter((els)=>{                      //change subtitle when click along with song
@@ -385,8 +384,6 @@ shuffle.addEventListener('click',()=>{
 
     }
 })
-
- 
 //song shuffle functions next_music,repeat_music,random_music
 
     //song +=1 i,e next_music;
@@ -484,10 +481,19 @@ shuffle.addEventListener('click',()=>{
         })
 
 
-//serachBar
 
+let pop_song_left=document.getElementById("pop_song_left");
+let pop_song_right=document.getElementById("pop_song_right")
+let pop_song=document.getElementsByClassName("pop_song")[0]; 
+//scroll popular song right
+pop_song_right.addEventListener('click',()=>{
+    pop_song.scrollLeft+=330;
+})
 
-
+//scroll popular song left
+pop_song_left.addEventListener('click',()=>{
+    pop_song.scrollLeft-=330;
+})
 //scroll popular artist
 let pop_art_left=document.getElementById("pop_art_left");
 let pop_art_right=document.getElementById("pop_art_right")
